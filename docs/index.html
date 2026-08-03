@@ -89,7 +89,7 @@
       <span>.kurviger · .gpx · .kml · .kmz — tap to browse</span>
       <input type="file" id="file">
     </div>
-    <button class="btn" id="pasteBtn" hidden
+    <button class="btn" id="pasteBtn"
             style="width:100%;margin-top:.75rem;padding:.8rem;font-weight:600">
       📋 Paste shared route</button>
     <p class="or">— or paste a route link —</p>
@@ -321,10 +321,12 @@ pasteBtn.addEventListener("click", async () => {
   await loadShared(clip.trim());
 });
 
-// Deep links: #paste (show clipboard button), #file=<base64> (small routes
-// only — the OS URL cap), or ?url=<share link / file URL>.
-(async () => {
-  if (location.hash.slice(1).split("&").includes("paste")) pasteBtn.hidden = false;
+// Deep links: #file=<base64> (small routes only — the OS caps app-to-app
+// URLs at ~2 KB) or ?url=<share link / file URL>. #paste is accepted but
+// the paste button is always visible anyway: iOS may hand a URL to an
+// already-running Home Screen instance without reloading it, so nothing
+// user-critical may depend on fragments or a fresh load.
+async function handleDeepLinks() {
   const frag = hashParam("file") ?? hashParam("kurviger");
   if (frag) {
     let text = frag, name = hashParam("name");
@@ -338,7 +340,10 @@ pasteBtn.addEventListener("click", async () => {
     $("link").value = preset;
     loadLink();
   }
-})();
+}
+handleDeepLinks();
+// Re-run when a new fragment arrives in an already-open page/instance.
+window.addEventListener("hashchange", handleDeepLinks);
 </script>
 </body>
 </html>
