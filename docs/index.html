@@ -294,7 +294,9 @@ async function loadShared(text, name = null) {
     route = routeCandidate;
     render();
   } catch (exc) {
-    showError("Could not read the shared route: " + exc.message);
+    showError(
+      `Could not read the shared route (${text.length} chars received): ` + exc.message
+    );
   }
 }
 
@@ -336,7 +338,16 @@ async function handleDeepLinks() {
       `file param ${(hashParam("file") ?? "").length} chars.`
     );
   }
+  // Bare payload: "#<base64>" with no param name. The iOS app-to-browser
+  // handoff truncates URLs at the first '=' inside the fragment (measured),
+  // so the Shortcut sends URL-safe base64 with padding stripped and no
+  // "file=" prefix at all.
+  const bare = location.hash.slice(1);
   const frag = hashParam("file") ?? hashParam("kurviger");
+  if (!frag && /^[A-Za-z0-9+/_=-]{40,}$/.test(bare)) {
+    await loadShared(bare);
+    return;
+  }
   if (!frag && location.hash.length > 1 && !probe) {
     // A fragment arrived but carried no route data — report what got through.
     showError(
