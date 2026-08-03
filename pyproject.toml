@@ -1,0 +1,20 @@
+[project]
+name = "route-converter"
+version = "0.1.0"
+description = "Convert GPX/KML/KMZ and Kurviger/Google Maps routes into Apple Maps (iOS / CarPlay) links."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+qr = ["qrcode>=7"]
+
+[project.scripts]
+route2maps = "route_converter.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["route_converter*"]

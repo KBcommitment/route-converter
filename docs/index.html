@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route → Apple Maps</title>
+<meta name="description" content="Convert a Kurviger, GPX, KML/KMZ or Google Maps route into an Apple Maps link that starts turn-by-turn navigation (iOS 18.4+, CarPlay).">
+<style>
+  :root {
+    --bg: #f5f5f7; --card: #ffffff; --ink: #1d1d1f; --muted: #6e6e73;
+    --line: #d2d2d7; --accent: #0071e3; --accent-ink: #ffffff;
+    --ok-bg: #e8f5e9; --err: #b00020; --err-bg: #fdecea;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161617; --card: #1d1d1f; --ink: #f5f5f7; --muted: #a1a1a6;
+      --line: #3a3a3c; --accent: #0a84ff; --ok-bg: #1e3320; --err: #ff6b6b; --err-bg: #3a1f22;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  main { max-width: 34rem; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  h1 { font-size: 1.45rem; margin: .5rem 0 .25rem; }
+  .sub { color: var(--muted); margin: 0 0 1.25rem; font-size: .95rem; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem; margin-bottom: 1rem;
+  }
+  .drop { border: 2px dashed var(--line); border-radius: 14px; text-align: center;
+    padding: 1.5rem 1rem; cursor: pointer; transition: border-color .15s; }
+  .drop.hover { border-color: var(--accent); }
+  .drop strong { display: block; margin-bottom: .25rem; }
+  .drop span { color: var(--muted); font-size: .9rem; }
+  input[type=file] { display: none; }
+  .or { text-align: center; color: var(--muted); font-size: .85rem; margin: .75rem 0; }
+  .linkrow { display: flex; gap: .5rem; }
+  .linkrow input {
+    flex: 1; min-width: 0; padding: .6rem .75rem; border: 1px solid var(--line);
+    border-radius: 10px; background: var(--bg); color: var(--ink); font-size: 16px;
+  }
+  button, .btn {
+    border: 0; border-radius: 10px; padding: .6rem 1rem; font-size: 1rem;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+    text-decoration: none; display: inline-block; text-align: center;
+  }
+  button.ghost { background: transparent; color: var(--accent); border: 1px solid var(--line); }
+  details { margin-top: .25rem; }
+  summary { cursor: pointer; color: var(--muted); font-size: .95rem; padding: .25rem 0; }
+  .opts { display: grid; gap: .75rem; padding-top: .5rem; }
+  .opt label { display: flex; justify-content: space-between; align-items: center; gap: .75rem; }
+  .opt .hint { color: var(--muted); font-size: .8rem; margin: .1rem 0 0; }
+  select, input[type=number] {
+    padding: .35rem .5rem; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--ink); font-size: .95rem;
+  }
+  .checks { display: flex; flex-wrap: wrap; gap: .35rem .9rem; }
+  .checks label { display: flex; align-items: center; gap: .35rem; font-size: .95rem; }
+  #result { display: none; }
+  #result.ok { display: block; background: var(--ok-bg); border-color: transparent; }
+  #routeName { font-weight: 600; overflow-wrap: anywhere; }
+  #meta { color: var(--muted); font-size: .9rem; margin: .25rem 0 .9rem; }
+  .actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+  .actions .btn { flex: 1 1 12rem; padding: .8rem 1rem; font-weight: 600; }
+  #stops { margin: .9rem 0 0; padding: 0 0 0 1.1rem; font-size: .9rem; color: var(--muted); }
+  #error { display: none; background: var(--err-bg); color: var(--err);
+    border-color: transparent; overflow-wrap: anywhere; }
+  #error.show { display: block; }
+  .note { color: var(--muted); font-size: .85rem; }
+  footer { color: var(--muted); font-size: .8rem; text-align: center; margin-top: 2rem; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Route → Apple Maps</h1>
+  <p class="sub">Turn a Kurviger / GPX / KML route into a link that starts
+  turn-by-turn navigation in native Apple Maps — CarPlay included.
+  Everything runs in your browser; the route never leaves this device.</p>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <strong>Choose a route file</strong>
+      <span>.kurviger · .gpx · .kml · .kmz — tap to browse</span>
+      <input type="file" id="file">
+    </div>
+    <p class="or">— or paste a route link —</p>
+    <div class="linkrow">
+      <input type="url" id="link" placeholder="https://kurviger.de/… or google.com/maps/dir/…"
+             autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button id="go">Convert</button>
+    </div>
+    <details>
+      <summary>Options</summary>
+      <div class="opts">
+        <div class="opt">
+          <label>Max stops <input type="number" id="maxStops" min="2" max="15" value="15"></label>
+          <p class="hint">Apple Maps caps a route at ~15 stops; your current location counts as one.</p>
+        </div>
+        <div class="opt">
+          <span>Avoid</span>
+          <div class="checks" id="avoid">
+            <label><input type="checkbox" value="highways"> highways</label>
+            <label><input type="checkbox" value="tolls"> tolls</label>
+            <label><input type="checkbox" value="busy-roads"> busy roads</label>
+            <label><input type="checkbox" value="stairs"> stairs</label>
+          </div>
+        </div>
+        <div class="opt">
+          <label>Checkpoint placement
+            <select id="strategy">
+              <option value="hybrid" selected>hybrid — favor bends &amp; detours</option>
+              <option value="even">even — spread by distance</option>
+            </select>
+          </label>
+        </div>
+        <div class="opt">
+          <label><span>Preview only (don’t auto-start navigation)</span>
+            <input type="checkbox" id="noStart"></label>
+          <p class="hint">Starting a multi-stop route by hand is what fails on CarPlay
+          (“Directions Not Available”) — leave this off to ride.</p>
+        </div>
+        <div class="opt">
+          <label><span>Pin origin to the route’s first point</span>
+            <input type="checkbox" id="sourceAtStart"></label>
+          <p class="hint">Default is your current location, which is what Apple Maps
+          navigates from.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card" id="error"></div>
+
+  <div class="card" id="result">
+    <div id="routeName"></div>
+    <div id="meta"></div>
+    <div class="actions">
+      <a class="btn" id="open" href="#" rel="noopener">Open in Apple Maps</a>
+      <button class="ghost" id="copy">Copy link</button>
+    </div>
+    <ol id="stops"></ol>
+    <p class="note">Open on an iPhone (iOS 18.4+) standing at the route’s start —
+    navigation begins on its own and CarPlay picks it up. Apple re-routes between
+    stops, so the ride approximates the planned line.</p>
+  </div>
+
+  <footer>
+    No upload, no tracking — parsing and conversion happen locally.
+    <a href="https://github.com/KBcommitment/route-converter">Source on GitHub</a>
+  </footer>
+</main>
+
+<script type="module">
+import { parseText, parseBytes, parseLink, convert } from "./converter.js";
+
+const $ = (id) => document.getElementById(id);
+let route = null;
+
+function options() {
+  return {
+    maxStops: Math.max(2, Math.min(15, Number($("maxStops").value) || 15)),
+    avoid: [...$("avoid").querySelectorAll("input:checked")].map((c) => c.value),
+    strategy: $("strategy").value,
+    noStart: $("noStart").checked,
+    sourceAtStart: $("sourceAtStart").checked,
+  };
+}
+
+function showError(msg) {
+  $("result").classList.remove("ok");
+  const e = $("error");
+  e.textContent = msg;
+  e.classList.add("show");
+}
+
+function render() {
+  if (!route) return;
+  let res;
+  try {
+    res = convert(route, options());
+  } catch (exc) {
+    showError(exc.message);
+    return;
+  }
+  $("error").classList.remove("show");
+  $("routeName").textContent = route.name || "(unnamed route)";
+  const capped = res.total > res.used.length ? " (capped for Apple Maps)" : "";
+  $("meta").textContent =
+    `${res.sourceFormat} · ${res.total} points → ${res.used.length} stops${capped}`;
+  $("open").href = res.url;
+  const stops = $("stops");
+  stops.replaceChildren();
+  for (const s of res.used.filter((s) => s.name)) {
+    const li = document.createElement("li");
+    li.textContent = `${s.name} (${s.lat.toFixed(5)}, ${s.lon.toFixed(5)})`;
+    stops.appendChild(li);
+  }
+  $("result").classList.add("ok");
+  $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function loadFile(file) {
+  try {
+    route = await parseBytes(await file.arrayBuffer(), file.name);
+    render();
+  } catch (exc) {
+    showError(exc.message);
+  }
+}
+
+async function loadLink() {
+  const url = $("link").value.trim();
+  if (!url) return;
+  try {
+    if (!url.startsWith("http")) {
+      route = parseText(url, null);
+    } else {
+      try {
+        route = parseLink(url);
+      } catch (exc) {
+        // Not a share link — maybe a URL of a route file (same-origin or CORS-open).
+        if (!/Unsupported link host/.test(exc.message)) throw exc;
+        const resp = await fetch(url);
+        if (!resp.ok) throw exc;
+        const fileName = new URL(url).pathname.split("/").pop() || null;
+        route = await parseBytes(await resp.arrayBuffer(), fileName);
+      }
+    }
+    render();
+  } catch (exc) {
+    showError(exc.message);
+  }
+}
+
+const drop = $("drop");
+drop.addEventListener("click", () => $("file").click());
+$("file").addEventListener("change", (e) => e.target.files[0] && loadFile(e.target.files[0]));
+for (const ev of ["dragover", "dragenter"]) drop.addEventListener(ev, (e) => {
+  e.preventDefault(); drop.classList.add("hover");
+});
+for (const ev of ["dragleave", "drop"]) drop.addEventListener(ev, (e) => {
+  e.preventDefault(); drop.classList.remove("hover");
+});
+drop.addEventListener("drop", (e) => e.dataTransfer.files[0] && loadFile(e.dataTransfer.files[0]));
+
+$("go").addEventListener("click", loadLink);
+$("link").addEventListener("keydown", (e) => e.key === "Enter" && loadLink());
+
+for (const el of ["maxStops", "strategy", "noStart", "sourceAtStart"]) {
+  $(el).addEventListener("change", render);
+}
+$("avoid").addEventListener("change", render);
+
+$("copy").addEventListener("click", async () => {
+  await navigator.clipboard.writeText($("open").href);
+  $("copy").textContent = "Copied ✓";
+  setTimeout(() => ($("copy").textContent = "Copy link"), 1500);
+});
+
+// Deep link: ?url=<share link or route-file URL> converts on load.
+const preset = new URLSearchParams(location.search).get("url");
+if (preset) {
+  $("link").value = preset;
+  loadLink();
+}
+</script>
+</body>
+</html>

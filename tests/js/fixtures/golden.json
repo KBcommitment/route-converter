@@ -1,0 +1,530 @@
+[
+  {
+    "name": "kurviger-outbound-defaults",
+    "input": {
+      "kind": "repo-file",
+      "path": "sample/Aandalsnes - Trollstigen - Valldal.kurviger"
+    },
+    "options": {},
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.567200,7.687500&waypoint=62.533940,7.690770&waypoint=62.518310,7.692490&waypoint=62.472030,7.676000&waypoint=62.456600,7.666400&waypoint=62.440450,7.640220&waypoint=62.417630,7.588760&waypoint=62.399050,7.549590&waypoint=62.390830,7.479940&waypoint=62.384480,7.435950&waypoint=62.376600,7.390200&waypoint=62.356740,7.370880&waypoint=62.342990,7.358390&destination=62.328600,7.346200&mode=driving&start=0",
+      "checkpoints_total": 1261,
+      "checkpoints_used": 14,
+      "stops": [
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": "Åndalsnes togstasjon, Åndalsnes, Norway"
+        },
+        {
+          "lat": 62.53394,
+          "lon": 7.69077,
+          "name": null
+        },
+        {
+          "lat": 62.51831,
+          "lon": 7.69249,
+          "name": null
+        },
+        {
+          "lat": 62.47203,
+          "lon": 7.676,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": "Trollstigen utsiktspunkt, Norway"
+        },
+        {
+          "lat": 62.44045,
+          "lon": 7.64022,
+          "name": null
+        },
+        {
+          "lat": 62.41763,
+          "lon": 7.58876,
+          "name": null
+        },
+        {
+          "lat": 62.39905,
+          "lon": 7.54959,
+          "name": null
+        },
+        {
+          "lat": 62.39083,
+          "lon": 7.47994,
+          "name": null
+        },
+        {
+          "lat": 62.38448,
+          "lon": 7.43595,
+          "name": null
+        },
+        {
+          "lat": 62.3766,
+          "lon": 7.3902,
+          "name": "Gudbrandsjuvet, Valldal, Norway"
+        },
+        {
+          "lat": 62.35674,
+          "lon": 7.37088,
+          "name": null
+        },
+        {
+          "lat": 62.34299,
+          "lon": 7.35839,
+          "name": null
+        },
+        {
+          "lat": 62.3286,
+          "lon": 7.3462,
+          "name": "Valldal ferjekai, Norway"
+        }
+      ]
+    }
+  },
+  {
+    "name": "kurviger-return-avoid-highways",
+    "input": {
+      "kind": "repo-file",
+      "path": "sample/Aandalsnes - Trollstigen - Valldal - return.kurviger"
+    },
+    "options": {
+      "avoid": [
+        "highways"
+      ]
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.328600,7.346200&waypoint=62.348460,7.365520&waypoint=62.356740,7.370880&waypoint=62.376600,7.390200&waypoint=62.384480,7.435950&waypoint=62.390830,7.479940&waypoint=62.399050,7.549590&waypoint=62.417630,7.588760&waypoint=62.440450,7.640220&waypoint=62.456600,7.666400&waypoint=62.472030,7.676000&waypoint=62.518310,7.692490&waypoint=62.533940,7.690770&destination=62.567200,7.687500&mode=driving&avoid=highways&start=0",
+      "checkpoints_total": 1261,
+      "checkpoints_used": 14,
+      "stops": [
+        {
+          "lat": 62.3286,
+          "lon": 7.3462,
+          "name": "Valldal ferjekai, Norway"
+        },
+        {
+          "lat": 62.34846,
+          "lon": 7.36552,
+          "name": null
+        },
+        {
+          "lat": 62.35674,
+          "lon": 7.37088,
+          "name": null
+        },
+        {
+          "lat": 62.3766,
+          "lon": 7.3902,
+          "name": "Gudbrandsjuvet, Valldal, Norway"
+        },
+        {
+          "lat": 62.38448,
+          "lon": 7.43595,
+          "name": null
+        },
+        {
+          "lat": 62.39083,
+          "lon": 7.47994,
+          "name": null
+        },
+        {
+          "lat": 62.39905,
+          "lon": 7.54959,
+          "name": null
+        },
+        {
+          "lat": 62.41763,
+          "lon": 7.58876,
+          "name": null
+        },
+        {
+          "lat": 62.44045,
+          "lon": 7.64022,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": "Trollstigen utsiktspunkt, Norway"
+        },
+        {
+          "lat": 62.47203,
+          "lon": 7.676,
+          "name": null
+        },
+        {
+          "lat": 62.51831,
+          "lon": 7.69249,
+          "name": null
+        },
+        {
+          "lat": 62.53394,
+          "lon": 7.69077,
+          "name": null
+        },
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": "Åndalsnes togstasjon, Åndalsnes, Norway"
+        }
+      ]
+    }
+  },
+  {
+    "name": "kurviger-outbound-even-8-preview",
+    "input": {
+      "kind": "repo-file",
+      "path": "sample/Aandalsnes - Trollstigen - Valldal.kurviger"
+    },
+    "options": {
+      "strategy": "even",
+      "maxStops": 8,
+      "avoid": [
+        "tolls",
+        "highways"
+      ],
+      "sourceAtStart": true,
+      "noStart": true
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?source=62.567200,7.687500&waypoint=62.509880,7.689770&waypoint=62.456600,7.666400&waypoint=62.418510,7.591150&waypoint=62.390880,7.498270&waypoint=62.376600,7.390200&waypoint=62.352600,7.368200&destination=62.328600,7.346200&mode=driving&avoid=tolls,highways",
+      "checkpoints_total": 1261,
+      "checkpoints_used": 8,
+      "stops": [
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": "Åndalsnes togstasjon, Åndalsnes, Norway"
+        },
+        {
+          "lat": 62.50988,
+          "lon": 7.68977,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": "Trollstigen utsiktspunkt, Norway"
+        },
+        {
+          "lat": 62.41851,
+          "lon": 7.59115,
+          "name": null
+        },
+        {
+          "lat": 62.39088,
+          "lon": 7.49827,
+          "name": null
+        },
+        {
+          "lat": 62.3766,
+          "lon": 7.3902,
+          "name": "Gudbrandsjuvet, Valldal, Norway"
+        },
+        {
+          "lat": 62.3526,
+          "lon": 7.3682,
+          "name": null
+        },
+        {
+          "lat": 62.3286,
+          "lon": 7.3462,
+          "name": "Valldal ferjekai, Norway"
+        }
+      ]
+    }
+  },
+  {
+    "name": "kurviger-outbound-start-delay",
+    "input": {
+      "kind": "repo-file",
+      "path": "sample/Aandalsnes - Trollstigen - Valldal.kurviger"
+    },
+    "options": {
+      "start": 30,
+      "maxStops": 10
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.567200,7.687500&waypoint=62.521510,7.693080&waypoint=62.472030,7.676000&waypoint=62.456600,7.666400&waypoint=62.427620,7.615900&waypoint=62.391280,7.504460&waypoint=62.376600,7.390200&waypoint=62.356740,7.370880&destination=62.328600,7.346200&mode=driving&start=30",
+      "checkpoints_total": 1261,
+      "checkpoints_used": 9,
+      "stops": [
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": "Åndalsnes togstasjon, Åndalsnes, Norway"
+        },
+        {
+          "lat": 62.52151,
+          "lon": 7.69308,
+          "name": null
+        },
+        {
+          "lat": 62.47203,
+          "lon": 7.676,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": "Trollstigen utsiktspunkt, Norway"
+        },
+        {
+          "lat": 62.42762,
+          "lon": 7.6159,
+          "name": null
+        },
+        {
+          "lat": 62.39128,
+          "lon": 7.50446,
+          "name": null
+        },
+        {
+          "lat": 62.3766,
+          "lon": 7.3902,
+          "name": "Gudbrandsjuvet, Valldal, Norway"
+        },
+        {
+          "lat": 62.35674,
+          "lon": 7.37088,
+          "name": null
+        },
+        {
+          "lat": 62.3286,
+          "lon": 7.3462,
+          "name": "Valldal ferjekai, Norway"
+        }
+      ]
+    }
+  },
+  {
+    "name": "gpx-track-with-waypoint",
+    "input": {
+      "kind": "text",
+      "fileName": "track.gpx",
+      "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" version=\"1.1\" creator=\"test\">\n  <metadata><name>Track &amp; Cafe</name></metadata>\n  <wpt lat=\"62.450\" lon=\"7.660\"><name>Cafe stop</name></wpt>\n  <trk><name>Test Track</name><trkseg>\n    <trkpt lat=\"62.350\" lon=\"7.560\"/>\n    <trkpt lat=\"62.370\" lon=\"7.580\"/>\n    <trkpt lat=\"62.390\" lon=\"7.600\"/>\n    <trkpt lat=\"62.410\" lon=\"7.620\"/>\n    <trkpt lat=\"62.430\" lon=\"7.640\"/>\n    <trkpt lat=\"62.450\" lon=\"7.660\"/>\n    <trkpt lat=\"62.470\" lon=\"7.680\"/>\n    <trkpt lat=\"62.490\" lon=\"7.700\"/>\n    <trkpt lat=\"62.510\" lon=\"7.720\"/>\n    <trkpt lat=\"62.530\" lon=\"7.740\"/>\n  </trkseg></trk>\n</gpx>\n"
+    },
+    "options": {
+      "maxStops": 6
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.350000,7.560000&waypoint=62.390000,7.600000&waypoint=62.450000,7.660000&waypoint=62.490000,7.700000&destination=62.530000,7.740000&mode=driving&start=0",
+      "checkpoints_total": 10,
+      "checkpoints_used": 5,
+      "stops": [
+        {
+          "lat": 62.35,
+          "lon": 7.56,
+          "name": null
+        },
+        {
+          "lat": 62.39,
+          "lon": 7.6,
+          "name": null
+        },
+        {
+          "lat": 62.45,
+          "lon": 7.66,
+          "name": "Cafe stop"
+        },
+        {
+          "lat": 62.49,
+          "lon": 7.7,
+          "name": null
+        },
+        {
+          "lat": 62.53,
+          "lon": 7.74,
+          "name": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "gpx-planned-route",
+    "input": {
+      "kind": "text",
+      "fileName": "route.gpx",
+      "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" version=\"1.1\" creator=\"test\">\n  <rte><name>Planned Route</name>\n    <rtept lat=\"62.250\" lon=\"7.460\"><name>Start</name></rtept>\n    <rtept lat=\"62.300\" lon=\"7.510\"/>\n    <rtept lat=\"62.350\" lon=\"7.560\"><name>Via</name></rtept>\n    <rtept lat=\"62.400\" lon=\"7.610\"/>\n    <rtept lat=\"62.450\" lon=\"7.660\"><name>End</name></rtept>\n  </rte>\n</gpx>\n"
+    },
+    "options": {
+      "maxStops": 6
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.250000,7.460000&waypoint=62.300000,7.510000&waypoint=62.350000,7.560000&waypoint=62.400000,7.610000&destination=62.450000,7.660000&mode=driving&start=0",
+      "checkpoints_total": 5,
+      "checkpoints_used": 5,
+      "stops": [
+        {
+          "lat": 62.25,
+          "lon": 7.46,
+          "name": "Start"
+        },
+        {
+          "lat": 62.3,
+          "lon": 7.51,
+          "name": null
+        },
+        {
+          "lat": 62.35,
+          "lon": 7.56,
+          "name": "Via"
+        },
+        {
+          "lat": 62.4,
+          "lon": 7.61,
+          "name": null
+        },
+        {
+          "lat": 62.45,
+          "lon": 7.66,
+          "name": "End"
+        }
+      ]
+    }
+  },
+  {
+    "name": "kml-linestring-placemark",
+    "input": {
+      "kind": "text",
+      "fileName": "trip.kml",
+      "text": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n  <Document><name>My KML Trip</name>\n    <Placemark><name>Bakery</name><Point><coordinates>7.610,62.400,0</coordinates></Point></Placemark>\n    <Placemark><name>The Line</name><LineString><coordinates>\n      7.560,62.350,0 7.570,62.360,0 7.580,62.370,0 7.590,62.380,0\n      7.600,62.390,0 7.610,62.400,0 7.620,62.410,0 7.630,62.420,0\n    </coordinates></LineString></Placemark>\n  </Document>\n</kml>\n"
+    },
+    "options": {
+      "maxStops": 6
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.350000,7.560000&waypoint=62.370000,7.580000&waypoint=62.400000,7.610000&waypoint=62.410000,7.620000&destination=62.420000,7.630000&mode=driving&start=0",
+      "checkpoints_total": 8,
+      "checkpoints_used": 5,
+      "stops": [
+        {
+          "lat": 62.35,
+          "lon": 7.56,
+          "name": null
+        },
+        {
+          "lat": 62.37,
+          "lon": 7.58,
+          "name": null
+        },
+        {
+          "lat": 62.4,
+          "lon": 7.61,
+          "name": "Bakery"
+        },
+        {
+          "lat": 62.41,
+          "lon": 7.62,
+          "name": null
+        },
+        {
+          "lat": 62.42,
+          "lon": 7.63,
+          "name": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "kmz-deflated",
+    "input": {
+      "kind": "bytes-b64",
+      "fileName": "trip.kmz",
+      "b64": "UEsDBBQAAAAIALFlA11n0N1sAAEAAOMBAAAHAAAAZG9jLmttbG2R0W7CIBSG7/sUhGsFWmerC8VkWXYzTUxWH6DpTpTUQkNxnW8/WtDVZXd8h/+c//zAN9/NGX2B6aRWOY4JwwhUpT+lOub4ULzNV3gjIl47lVOqLscna9tnSvu+J7oFdZQdUWCpU9CEJFhECPFXXV0aUFZwVTYgdlf0vtuiwsiW07HiRE62P5cVNKWpg+6lrMFcg4TvtRwmVFobt05poRMZSWM2SxPyxNiMcTq94zQ00N+x/9sUJ0BbqeBmNJw/rHGRH93GboQyskxH08XSmQ6YeUwDrjxmAdceXZXdJ6TMF9deM00xYOIxDrjwmNwm/A06XfgxLaf3p4/48Cci+gFQSwECFAMUAAAACACxZQNdZ9DdbAABAADjAQAABwAAAAAAAAAAAAAAgAEAAAAAZG9jLmttbFBLBQYAAAAAAQABADUAAAAlAQAAAAA="
+    },
+    "options": {
+      "maxStops": 6
+    },
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.350000,7.560000&waypoint=62.370000,7.580000&waypoint=62.400000,7.610000&waypoint=62.410000,7.620000&destination=62.420000,7.630000&mode=driving&start=0",
+      "checkpoints_total": 8,
+      "checkpoints_used": 5,
+      "stops": [
+        {
+          "lat": 62.35,
+          "lon": 7.56,
+          "name": null
+        },
+        {
+          "lat": 62.37,
+          "lon": 7.58,
+          "name": null
+        },
+        {
+          "lat": 62.4,
+          "lon": 7.61,
+          "name": "Bakery"
+        },
+        {
+          "lat": 62.41,
+          "lon": 7.62,
+          "name": null
+        },
+        {
+          "lat": 62.42,
+          "lon": 7.63,
+          "name": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "kurviger-share-link",
+    "input": {
+      "kind": "link",
+      "url": "https://kurviger.de/en?point=62.5672,7.6875&point=62.4566,7.6664&point=62.3286,7.3462"
+    },
+    "options": {},
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.567200,7.687500&waypoint=62.456600,7.666400&destination=62.328600,7.346200&mode=driving&start=0",
+      "checkpoints_total": 3,
+      "checkpoints_used": 3,
+      "stops": [
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": null
+        },
+        {
+          "lat": 62.3286,
+          "lon": 7.3462,
+          "name": null
+        }
+      ]
+    }
+  },
+  {
+    "name": "google-full-dir-link",
+    "input": {
+      "kind": "link",
+      "url": "https://www.google.com/maps/dir/62.5672,7.6875/Trollstigen+utsiktspunkt/@62.45,7.6,11z/data=!4m9!4m8!1m0!1m5!1m1!1s0x0:0x0!2m2!1d7.6664!2d62.4566!3e0"
+    },
+    "options": {},
+    "expected": {
+      "url": "https://maps.apple.com/directions?waypoint=62.567200,7.687500&destination=62.456600,7.666400&mode=driving&start=0",
+      "checkpoints_total": 2,
+      "checkpoints_used": 2,
+      "stops": [
+        {
+          "lat": 62.5672,
+          "lon": 7.6875,
+          "name": null
+        },
+        {
+          "lat": 62.4566,
+          "lon": 7.6664,
+          "name": null
+        }
+      ]
+    }
+  }
+]
