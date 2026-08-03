@@ -97,6 +97,30 @@ golden fixtures generated from its `--json` output
 (`python3 tests/js/gen_fixtures.py`), and `node --test tests/js/` checks the JS
 port against them.
 
+### Share-sheet integration (iOS Shortcut)
+
+iOS has no Web Share Target, so a web page can never appear in the share sheet
+directly. The bridge is a Shortcut (share-sheet enabled, input: Files):
+
+```
+Receive Files from Share Sheet
+Base64 Encode        (Shortcut Input)
+Copy to Clipboard    (Base64 Encoded)
+Open URLs            (https://…/route-converter/#paste)
+```
+
+Then: export in Kurviger → Share → the Shortcut → tap **📋 Paste shared
+route** on the page → done. To skip the iOS paste-permission bubble:
+Settings → Apps → Safari → *Paste from Other Apps* → Allow.
+
+Why the clipboard and not the URL: iOS re-parses URLs during app→browser
+handoff and mangles large fragments — a 34 KB route fragment arrives either
+truncated at its first `=` or stripped entirely (measured on iOS 26). Query
+strings would reach the server (and its logs), which this page's
+privacy design forbids. The clipboard has neither problem; the one tap it
+costs is WebKit's user-gesture requirement for clipboard reads. Small
+payloads in `#<base64>` fragments do work for links opened *within* Safari.
+
 ## Install (CLI)
 
 No dependencies required (Python 3.9+). Run it straight from the repo:

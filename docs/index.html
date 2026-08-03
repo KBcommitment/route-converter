@@ -329,33 +329,16 @@ pasteBtn.addEventListener("click", async () => {
 // already-running Home Screen instance without reloading it, so nothing
 // user-critical may depend on fragments or a fresh load.
 async function handleDeepLinks() {
-  // Diagnostics: a ?d=<expected-length> probe reports what actually arrived.
-  const probe = new URLSearchParams(location.search).get("d");
-  if (probe) {
-    showError(
-      `Diagnostics — sender says URL should be ${probe.slice(0, 60)} chars; ` +
-      `received: total ${location.href.length}, hash ${location.hash.length}, ` +
-      `file param ${(hashParam("file") ?? "").length} chars.`
-    );
-  }
-  // Bare payload: "#<base64>" with no param name. The iOS app-to-browser
-  // handoff truncates URLs at the first '=' inside the fragment (measured),
-  // so the Shortcut sends URL-safe base64 with padding stripped and no
-  // "file=" prefix at all.
+  // Bare payload: "#<base64>" with no param name. Note: iOS's app-to-browser
+  // handoff re-parses URLs and drops or truncates large fragments (measured:
+  // a 34 KB fragment arrives cut at the first '=' or stripped entirely), so
+  // fragments only work for small payloads or links opened within Safari —
+  // that's why the share Shortcut uses the clipboard instead.
   let bare = location.hash.slice(1);
   const frag = hashParam("file") ?? hashParam("kurviger");
   if (!frag && /^[A-Za-z0-9%+/_=-]{40,}$/.test(bare)) {
     try { bare = decodeURIComponent(bare); } catch { /* keep raw */ }
     await loadShared(bare);
-    return;
-  }
-  if (!frag && location.hash.length > 1 && !probe) {
-    // A fragment arrived but carried no route data — report what got through.
-    showError(
-      `Diagnostics — fragment arrived without route data: hash ` +
-      `${location.hash.length} chars, total URL ${location.href.length} chars, ` +
-      `hash starts "${location.hash.slice(0, 24)}".`
-    );
     return;
   }
   if (frag) {

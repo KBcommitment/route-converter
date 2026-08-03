@@ -72,6 +72,13 @@ Behavioral invariants (verified on a real iPhone + CarPlay session — don't
 - `goo.gl` short links cannot be expanded client-side (CORS); the web app
   intentionally errors with a paste-the-expanded-URL hint. The Python CLI does
   expand them (network).
+- **Route data cannot ride in a URL on iOS.** The app→browser handoff
+  re-parses URLs and mangles large fragments (measured: a 34 KB fragment
+  arrives truncated at its first `=` or stripped entirely), and query strings
+  would hit the server, which the privacy design forbids. The share-sheet
+  Shortcut therefore uses the clipboard + the page's paste button — the one
+  tap is WebKit's user-gesture requirement for clipboard reads, not a UX
+  choice. Don't "optimize" it back into the URL.
 
 ## Privacy rule (repo-specific, non-negotiable)
 
