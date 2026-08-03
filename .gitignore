@@ -10,3 +10,6 @@ venv/
 
 # generated QR output
 route_qr*.png
+
+# local route files — personal data, never committed
+private/
