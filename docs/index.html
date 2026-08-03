@@ -342,9 +342,10 @@ async function handleDeepLinks() {
   // handoff truncates URLs at the first '=' inside the fragment (measured),
   // so the Shortcut sends URL-safe base64 with padding stripped and no
   // "file=" prefix at all.
-  const bare = location.hash.slice(1);
+  let bare = location.hash.slice(1);
   const frag = hashParam("file") ?? hashParam("kurviger");
-  if (!frag && /^[A-Za-z0-9+/_=-]{40,}$/.test(bare)) {
+  if (!frag && /^[A-Za-z0-9%+/_=-]{40,}$/.test(bare)) {
+    try { bare = decodeURIComponent(bare); } catch { /* keep raw */ }
     await loadShared(bare);
     return;
   }
