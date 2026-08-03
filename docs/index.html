@@ -19,6 +19,7 @@
     }
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0; background: var(--bg); color: var(--ink);
     font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -88,6 +89,9 @@
       <span>.kurviger · .gpx · .kml · .kmz — tap to browse</span>
       <input type="file" id="file">
     </div>
+    <button class="btn" id="pasteBtn" hidden
+            style="width:100%;margin-top:.75rem;padding:.8rem;font-weight:600">
+      📋 Paste shared route</button>
     <p class="or">— or paste a route link —</p>
     <div class="linkrow">
       <input type="url" id="link" placeholder="https://kurviger.de/… or google.com/maps/dir/…"
@@ -262,12 +266,79 @@ $("copy").addEventListener("click", async () => {
   setTimeout(() => ($("copy").textContent = "Copy link"), 1500);
 });
 
-// Deep link: ?url=<share link or route-file URL> converts on load.
-const preset = new URLSearchParams(location.search).get("url");
-if (preset) {
-  $("link").value = preset;
-  loadLink();
+// --- Share-sheet bridge (iOS Shortcut) ------------------------------------
+// iOS has no Web Share Target, and its URL-opening pipeline truncates URLs
+// around 2 KB (measured), so route data can't ride in the URL. The Shortcut
+// instead copies the file to the clipboard (base64) and opens this page with
+// #paste; clipboard access needs one user tap, hence the button. Nothing
+// leaves the device — the fragment isn't sent to the server, and the
+// clipboard is read locally.
+
+function decodeRouteBytes(text) {
+  // Tolerant base64: Shortcuts line breaks, URL-safe alphabet, lost padding.
+  let b64 = text.replace(/\s+/g, "").replace(/-/g, "+").replace(/_/g, "/");
+  while (b64.length % 4) b64 += "=";
+  const bin = atob(b64);
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
 }
+
+async function loadShared(text, name = null) {
+  try {
+    let routeCandidate;
+    try {
+      routeCandidate = await parseBytes(decodeRouteBytes(text).buffer, name);
+    } catch {
+      // Not base64 — maybe the raw route text itself (.kurviger JSON, GPX…).
+      routeCandidate = parseText(text, name);
+    }
+    route = routeCandidate;
+    render();
+  } catch (exc) {
+    showError("Could not read the shared route: " + exc.message);
+  }
+}
+
+function hashParam(key) {
+  for (const part of location.hash.slice(1).split("&")) {
+    if (part.startsWith(key + "=")) return part.slice(key.length + 1);
+  }
+  return null;
+}
+
+const pasteBtn = $("pasteBtn");
+pasteBtn.addEventListener("click", async () => {
+  let clip;
+  try {
+    clip = await navigator.clipboard.readText();
+  } catch {
+    showError("Clipboard access was declined — allow Paste, or pick the file instead.");
+    return;
+  }
+  if (!clip || !clip.trim()) {
+    showError("The clipboard is empty — run the share Shortcut first.");
+    return;
+  }
+  await loadShared(clip.trim());
+});
+
+// Deep links: #paste (show clipboard button), #file=<base64> (small routes
+// only — the OS URL cap), or ?url=<share link / file URL>.
+(async () => {
+  if (location.hash.slice(1).split("&").includes("paste")) pasteBtn.hidden = false;
+  const frag = hashParam("file") ?? hashParam("kurviger");
+  if (frag) {
+    let text = frag, name = hashParam("name");
+    try { text = decodeURIComponent(frag); } catch { /* keep raw */ }
+    if (name) { try { name = decodeURIComponent(name); } catch { /* keep */ } }
+    await loadShared(text, name);
+    return;
+  }
+  const preset = new URLSearchParams(location.search).get("url");
+  if (preset) {
+    $("link").value = preset;
+    loadLink();
+  }
+})();
 </script>
 </body>
 </html>
