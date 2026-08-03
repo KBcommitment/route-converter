@@ -327,6 +327,15 @@ pasteBtn.addEventListener("click", async () => {
 // already-running Home Screen instance without reloading it, so nothing
 // user-critical may depend on fragments or a fresh load.
 async function handleDeepLinks() {
+  // Diagnostics: a ?d=<expected-length> probe reports what actually arrived.
+  const probe = new URLSearchParams(location.search).get("d");
+  if (probe) {
+    showError(
+      `Diagnostics — sender says URL should be ${probe.slice(0, 60)} chars; ` +
+      `received: total ${location.href.length}, hash ${location.hash.length}, ` +
+      `file param ${(hashParam("file") ?? "").length} chars.`
+    );
+  }
   const frag = hashParam("file") ?? hashParam("kurviger");
   if (frag) {
     let text = frag, name = hashParam("name");
