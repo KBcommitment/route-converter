@@ -179,7 +179,7 @@ links/            generated Apple Maps URLs for the sample route, one per file
 
 ```bash
 python3 -m unittest discover -s tests -v   # Python reference
-node --test tests/js/                      # JS port vs golden fixtures
+node --test tests/js/test_converter.mjs    # JS port vs golden fixtures
 ```
 
 ## Testing CarPlay without a car
