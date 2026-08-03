@@ -337,6 +337,15 @@ async function handleDeepLinks() {
     );
   }
   const frag = hashParam("file") ?? hashParam("kurviger");
+  if (!frag && location.hash.length > 1 && !probe) {
+    // A fragment arrived but carried no route data — report what got through.
+    showError(
+      `Diagnostics — fragment arrived without route data: hash ` +
+      `${location.hash.length} chars, total URL ${location.href.length} chars, ` +
+      `hash starts "${location.hash.slice(0, 24)}".`
+    );
+    return;
+  }
   if (frag) {
     let text = frag, name = hashParam("name");
     try { text = decodeURIComponent(frag); } catch { /* keep raw */ }
